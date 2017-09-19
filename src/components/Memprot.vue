@@ -86,7 +86,6 @@
 </template>
 
 <script>
-//TODO: DatePicker ggf. lösha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1
 
 var state = {
   date1: new Date()
@@ -110,7 +109,6 @@ export default {
   data: () => ({
     //VeeValidate data
     locale: 'de',
-
 
     //SelectPrüfungsorte
     standorte: [
