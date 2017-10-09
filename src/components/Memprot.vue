@@ -21,7 +21,7 @@
         </div>
         <div class="form-group col-md-6 mb-3">
           <label for="tester">Prüfer</label>
-          <input name="tester" v-validate="'required'" data-vv-as="Prüfer" type="text" class="form-control" id="tester" placeholder="Prüfer"/>
+          <input name="tester" data-vv-as="Prüfer" type="text" class="form-control" id="tester" placeholder="Prüfer"/>
         </div>
         <hr>
       </div>
@@ -33,7 +33,8 @@
         <div class="form-group col-md-6 mb-3 ">
           <label for="prüfungsort">Prüfungsort</label>
           <span class="asteriskField">*</span>
-          <select class="form-control" name="prüfungsort" id="prüfungsort" v-validate="'required'" data-vv-as="Prüfungsort" data-vv-delay="500">
+          <select v-if="!show" class="form-control" name="prüfungsort" id="prüfungsort" v-validate="'required'" data-vv-as="Prüfungsort" data-vv-delay="500">
+            <option active>{{ newPlace }}</option>
             <option v-for="standort in standorte">{{standort.name}}</option>
           </select>
           <div v-if="!show" class="help-block alert alert-danger" v-show="errors.has('prüfungsort')">
@@ -98,66 +99,31 @@ var newPlace = {
   }
 }
 
-import {Validator} from 'vee-validate';
-import ar from 'vee-validate/dist/locale/ar';
-import de from 'vee-validate/dist/locale/de';
-import es from 'vee-validate/dist/locale/es';
-import ru from 'vee-validate/dist/locale/ru';
+
+let required = {
+  required : "'required'"
+}
 
 export default {
   name: 'memprot',
+
   data: () => ({
-    //VeeValidate data
-    locale: 'de',
 
-    //SelectPrüfungsorte
-    standorte: [
-      {
-        name: '',
-      },
-      {
-        name: 'Ansbach',
-      },
-      {
-        name: 'Aschersleben',
-      },
-      {
-        name: 'Augsburg',
-      }
-    ],
+    //Inizialisierung alternative Prüfungsorte
+    standorte: [],
 
-    //Neuer Prüfungsort
-
-    show: false, //Einblenden des Feldes
+    //Einblenden des Feldes alternativer Prüfungsort
+    show: false,
 
     newPlace: '',
 
-    /*
-    addPlace: () => {
-      this.standorte.push({
-        name: this.newPlace.name,
-      });
-
-
-    },*/
-
-
-
-
-
-
+    required
 
 
 
 
   }),
 
-  /*computed: {
-    locale(){
-      this.$validator.setLocale('de');
-      return this.locale === 'en' ? 'De' : 'English';
-    }
-  },*/
   methods: {
 
     toggleExamLocation() {
@@ -185,20 +151,16 @@ export default {
         alert('Pflichtfelder bitte ausfüllen!');
       });
     },
+
+
   },
 
-  created() {
-    this.$validator.setLocale('de');
-    this.$validator.updateDictionary({
-      de: {
-        messages: de.messages,
-        attributes: {
-          email: 'البريد الاليكتروني',
-          phone: 'رقم الهاتف'
-        }
-      }
-    });
-  }
+  created: function(){
+    this.$http.get('https://jsonplaceholder.typicode.com/comments')
+      .then(function(response){
+        this.standorte = response.data;
+      });
+  },
 
 }
 </script>
@@ -229,20 +191,4 @@ a {
   color: #42b983;
 }
 
-
-
-
-
-
-
-
-
-
-/*.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s
-}
-
-.fade-enter, .fade-leave-to {
-  opacity: 0
-}*/
 </style>
