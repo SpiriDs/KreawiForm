@@ -1,6 +1,7 @@
 <template>
 <div class="memprot">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+  <!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous"-->
   <div>
     <form @submit.prevent="validateBeforeSubmit()" class="container" novalidate>
       <div class="section-header">
@@ -11,17 +12,30 @@
       <!--button @click="changeLocale" type="button" class="button is-primary">Change Locale To {{ nextLocale }}</button-->
       <br>
       <div class="row">
-        <div class="from-group col-md-6 mb-3">
-          <label for="datum">Prüfungsdatum</label>
+        <div class="from-group col-md-6 mb-3" :class="{'has-error' : errors.has('datum')}">
+          <label class="control-label requiredField" for="datum">Prüfungsdatum</label>
           <span class="asteriskField">*</span>
-          <input name="datum" v-validate="'required'" data-vv-as="Prüfungsdatum" type="date" class="form-control" id="time" placeholder="Prüfungsdatum">
+          <flat-pickr style="background-color: white;"
+                v-model="date"
+                placeholder="Prüfungsdatum"
+                :config="configFlatPickr"
+                input-class="form-control custom-input-class"                
+                name="datum"
+                v-validate="'required'"
+                data-vv-as="Prüfungsdatum"
+                class="form-control"
+                id="datum"
+                
+                 >
+        </flat-pickr>
+          <!--input name="datum" v-validate="'required'" data-vv-as="Prüfungsdatum" type="date" class="form-control" id="datum" placeholder="Prüfungsdatum"-->
           <div class="help-block alert alert-danger" v-show="errors.has('datum')">
             {{ errors.first('datum')}}
           </div>
         </div>
         <div class="form-group col-md-6 mb-3">
           <label for="tester">Prüfer</label>
-          <input name="tester" data-vv-as="Prüfer" type="text" class="form-control" id="tester" placeholder="Prüfer"/>
+          <input name="tester" data-vv-as="Prüfer" type="text" class="form-control" id="tester" placeholder="Prüfer" />
         </div>
         <hr>
       </div>
@@ -30,10 +44,10 @@
           <label class="control-label " for="text1">Beisitzer</label>
           <input class="form-control" id="assessor" name="assesor" placeholder="Beisitzer" type="text" />
         </div>
-        <div class="form-group col-md-6 mb-3 ">
-          <label for="prüfungsort">Prüfungsort</label>
+        <div class="form-group col-md-6 mb-3 " :class="{'has-error' : errors.has('prüfungsort')}">
+          <label class="control-label requiredField" for="prüfungsort">Prüfungsort</label>
           <span class="asteriskField">*</span>
-          <select v-if="!show" class="form-control" name="prüfungsort" id="prüfungsort" v-validate="'required'" data-vv-as="Prüfungsort" data-vv-delay="500">
+          <select v-if="!show" class="form-control" name="prüfungsort" id="prüfungsort" v-validate="'required'" data-vv-as="Prüfungsort">
             <option active>{{ newPlace }}</option>
             <option v-for="standort in standorte">{{standort.name}}</option>
           </select>
@@ -41,7 +55,7 @@
             {{ errors.first('prüfungsort')}}
           </div>
           <div>
-            <button @click.prevent="toggleExamLocation()">Prüfungsort nicht dabei? Bitte hier klicken</button>
+            <button style="margin-top: 10px;" @click.prevent="toggleExamLocation()">Prüfungsort nicht dabei? Bitte hier klicken</button>
           </div>
           <br/>
           <div v-if="show" class="form-group">
@@ -62,7 +76,7 @@
             {{ errors.first('prüfungsfragen')}}
           </div>
         </div>
-        <div class="form-group col-md-6 mb-3">
+        <div class="form-group col-md-6 mb-3" :class="{'has-error' : errors.has('impressions')}">
           <label class="control-label requiredField" for="impressions">Persönliche Eindrücke</label>
           <span class="asteriskField">*</span>
           <textarea name="impressions" v-validate="'required'" data-vv-as="Persönliche Eindrücke" class="form-control" cols="40" id="impressions" placeholder="Persönliche Eindrücke" rows="10"></textarea>
@@ -80,17 +94,24 @@
           <button class="btn btn-primary " name="submit" type="submit">Absenden</button>
         </div>
       </div>
+
+      <!--datepicker></datepicker-->
+
+      <v-select v-model: selected :options="standorte"></v-select>
+      <!--v-select :debounce="250" :on-search="getOptions" :options="standorte.name" placeholder="Search GitHub Repositories..." label="full_name">
+      </v-select-->
     </form>
+
+
 
   </div>
 </div>
 </template>
 
 <script>
-
-var state = {
+/*var state = {
   date1: new Date()
-}
+}*/
 
 var newPlace = {
   el: '#newPlace',
@@ -101,7 +122,7 @@ var newPlace = {
 
 
 let required = {
-  required : "'required'"
+  required: "'required'"
 }
 
 export default {
@@ -117,8 +138,10 @@ export default {
 
     newPlace: '',
 
-    required
+    required,
 
+    selected: null,
+    options: null,
 
 
 
@@ -153,11 +176,13 @@ export default {
     },
 
 
+
+
   },
 
-  created: function(){
+  created: function() {
     this.$http.get('https://jsonplaceholder.typicode.com/comments')
-      .then(function(response){
+      .then(function(response) {
         this.standorte = response.data;
       });
   },
@@ -190,5 +215,4 @@ li {
 a {
   color: #42b983;
 }
-
 </style>

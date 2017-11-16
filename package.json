@@ -10,12 +10,16 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "moment": "^2.19.1",
     "simple-vue-validator": "^0.14.0",
     "vee-validate": "^2.0.0-rc.14",
     "vue": "^2.4.2",
+    "vue-datepicker": "^1.3.0",
+    "vue-flatpickr-component": "^4.0.0",
     "vue-form": "^4.4.0",
+    "vue-material-datepicker": "^2.0.1",
     "vue-resource": "^1.3.4",
-    "vuejs-datepicker": "^0.9.11"
+    "vuejs-datepicker": "^0.9.19"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
